@@ -5,6 +5,8 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { Ionicons } from "@expo/vector-icons";
 import colors from "../constants/colors";
 
+import HeaderBar from "../screens/HeaderBar";
+
 // Initial
 import InitialScreen from "../screens/InitialScreen";
 
@@ -19,6 +21,9 @@ import AdminHomeScreen from "../screens/admin/AdminHomeScreen";
 // User Pages
 import AccountPendingScreen from "../screens/user/AccountPendingScreen";
 import UserHomeScreen from "../screens/user/UserHomeScreen";
+
+// Template Page
+import Template from "../screens/Template";
 
 export default MainNavigation = () => {
   const Stack = createNativeStackNavigator();
@@ -47,14 +52,54 @@ export default MainNavigation = () => {
   }
 
   function AdminStack() {
+    function AdminMainStack() {
+      return (
+        <Stack.Navigator
+          initialRouteName="AdminHomeScreen"
+          headerMode="screen"
+          screenOptions={{
+            header: ({ options, route, back, navigation }) => (
+              <HeaderBar
+                options={options}
+                route={route}
+                back={back}
+                navigation={navigation}
+              />
+            ),
+          }}
+        >
+          <Stack.Screen
+            name="AdminHomeScreen"
+            component={AdminHomeScreen}
+            options={{ headerTitle: "Home" }}
+          />
+        </Stack.Navigator>
+      );
+    }
+
     return (
-      <Stack.Navigator initialRouteName="AdminHomeScreen">
-        <Stack.Screen
-          name="AdminHomeScreen"
-          component={AdminHomeScreen}
-          options={{ headerShown: false }}
-        />
-      </Stack.Navigator>
+      <Tab.Navigator
+        initialRouteName="Home"
+        screenOptions={({ route, navigation }) => ({
+          tabBarIcon: ({ focused, color, size }) => {
+            let iconName;
+
+            if (route.name === "Home") {
+              iconName = focused ? "home" : "home-outline";
+            } else if (route.name === "Order") {
+              iconName = focused ? "time" : "time-outline";
+            }
+
+            return <Ionicons name={iconName} size={size} color={color} />;
+          },
+          headerShown: false,
+          unmountOnBlur: true,
+          tabBarActiveTintColor: colors.navigationBottom,
+        })}
+      >
+        <Tab.Screen name="Home" component={AdminMainStack} />
+        <Tab.Screen name="Order" component={Template} />
+      </Tab.Navigator>
     );
   }
 

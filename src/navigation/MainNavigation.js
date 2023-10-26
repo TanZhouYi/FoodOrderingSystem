@@ -17,6 +17,7 @@ import ResetPassScreen from "../screens/auth/ResetPassScreen";
 
 // Admin Pages
 import AdminHomeScreen from "../screens/admin/AdminHomeScreen";
+import VerifyScreen from "../screens/admin/VerifyScreen";
 
 // User Pages
 import AccountPendingScreen from "../screens/user/AccountPendingScreen";
@@ -51,32 +52,37 @@ export default MainNavigation = () => {
     );
   }
 
-  function AdminStack() {
-    function AdminMainStack() {
-      return (
-        <Stack.Navigator
-          initialRouteName="AdminHomeScreen"
-          headerMode="screen"
-          screenOptions={{
-            header: ({ options, route, back, navigation }) => (
-              <HeaderBar
-                options={options}
-                route={route}
-                back={back}
-                navigation={navigation}
-              />
-            ),
-          }}
-        >
-          <Stack.Screen
-            name="AdminHomeScreen"
-            component={AdminHomeScreen}
-            options={{ headerTitle: "Home" }}
-          />
-        </Stack.Navigator>
-      );
-    }
+  function AdminMainStack() {
+    return (
+      <Stack.Navigator
+        initialRouteName="AdminHomeScreen"
+        headerMode="screen"
+        screenOptions={{
+          header: ({ options, route, back, navigation }) => (
+            <HeaderBar
+              options={options}
+              route={route}
+              back={back}
+              navigation={navigation}
+            />
+          ),
+        }}
+      >
+        <Stack.Screen
+          name="AdminHomeScreen"
+          component={AdminHomeScreen}
+          options={{ headerTitle: "Home" }}
+        />
+        <Stack.Screen
+          name="VerifyScreen"
+          component={VerifyScreen}
+          options={{ headerTitle: "Verify Registration" }}
+        />
+      </Stack.Navigator>
+    );
+  }
 
+  function AdminStack() {
     return (
       <Tab.Navigator
         initialRouteName="Home"

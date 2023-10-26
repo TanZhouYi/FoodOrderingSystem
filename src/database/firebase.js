@@ -126,10 +126,17 @@ const userResetPassword = async (email) => {
     });
 };
 
+// Update user status
+const userUpdateStatus = async (userID, status) => {
+  update(ref(db, `users/${userID}/`), { status });
+};
+
 export {
   getUserDetail,
   checkDoneInit,
   userRegister,
   userLogin,
   userResetPassword,
+  userUpdateStatus,
+  userList,
 };

@@ -41,7 +41,7 @@ const AdminHomeScreen = ({ route, navigation }) => {
             gap: 10,
           }}
         >
-          <TouchableOpacity>
+          <TouchableOpacity onPress={() => navigation.navigate("VerifyScreen")}>
             <View style={styles.btnContainer}>
               <Ionicons
                 name="person-add-outline"

@@ -35,6 +35,18 @@ const auth = initializeAuth(app, {
   persistence: getReactNativePersistence(ReactNativeAsyncStorage),
 });
 
+// Check is complete initialize
+let isInit = false;
+const checkDoneInit = async () =>
+  await new Promise((resolve) => {
+    let timer = setInterval(() => {
+      if (isInit) {
+        clearInterval(timer);
+        resolve();
+      }
+    }, 200);
+  });
+
 // Fetch users list
 let userList = [];
 const refUsersList = ref(db, "users");
@@ -46,6 +58,7 @@ onValue(refUsersList, (snapshot) => {
     data = snapshot.val();
   }
   userList = data ?? [];
+  isInit = true;
 });
 
 // Get & store user detail
@@ -55,4 +68,68 @@ const getUserDetail = (uid = false) => {
   return userList.filter((item) => item.id == userID)[0] ?? [];
 };
 
-export { getUserDetail };
+// User Register Account
+const userRegister = async (userID, email, phone, password, role) => {
+  return await createUserWithEmailAndPassword(auth, email, password)
+    .then((userCredential) => {
+      const user = userCredential.user;
+      set(ref(db, `users/${user.uid}`), {
+        id: user.uid,
+        userID: userID,
+        email: email,
+        phone: phone,
+        role: role,
+        credit: 0,
+        status: "Pending",
+      });
+      return true;
+    })
+    .catch((error) => {
+      const errorCode = error.code;
+      const errorMessage = error.message;
+      console.log(errorCode);
+      console.log(errorMessage);
+      return false;
+    });
+};
+
+// User Login Function
+const userLogin = async (email, password) => {
+  return await signInWithEmailAndPassword(auth, email, password)
+    .then((userCredential) => {
+      const user = userCredential.user;
+      let result = userList.filter((item) => item.id == user.uid)[0];
+      getUserDetail(user.uid);
+      return result;
+    })
+    .catch((error) => {
+      const errorCode = error.code;
+      const errorMessage = error.message;
+      console.log(errorCode);
+      console.log(errorMessage);
+      return false;
+    });
+};
+
+// Reset user password
+const userResetPassword = async (email) => {
+  return await sendPasswordResetEmail(auth, email)
+    .then(() => {
+      return true;
+    })
+    .catch((error) => {
+      const errorCode = error.code;
+      const errorMessage = error.message;
+      console.log(errorCode);
+      console.log(errorMessage);
+      return false;
+    });
+};
+
+export {
+  getUserDetail,
+  checkDoneInit,
+  userRegister,
+  userLogin,
+  userResetPassword,
+};

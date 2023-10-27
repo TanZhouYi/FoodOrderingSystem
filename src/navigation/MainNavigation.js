@@ -5,6 +5,8 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { Ionicons } from "@expo/vector-icons";
 import colors from "../constants/colors";
 
+import HeaderBar from "../screens/HeaderBar";
+
 // Initial
 import InitialScreen from "../screens/InitialScreen";
 
@@ -15,10 +17,19 @@ import ResetPassScreen from "../screens/auth/ResetPassScreen";
 
 // Admin Pages
 import AdminHomeScreen from "../screens/admin/AdminHomeScreen";
+import VerifyScreen from "../screens/admin/VerifyScreen";
+import TopupScreen from "../screens/admin/TopupScreen";
+import ManageMenuScreen from "../screens/admin/ManageMenuScreen";
+import MenuAddScreen from "../screens/admin/MenuAddScreen";
+import MenuDetailScreen from "../screens/admin/MenuDetailScreen";
+import StaffCreditScreen from "../screens/admin/StaffCreditScreen";
 
 // User Pages
 import AccountPendingScreen from "../screens/user/AccountPendingScreen";
 import UserHomeScreen from "../screens/user/UserHomeScreen";
+
+// Template Page
+import Template from "../screens/Template";
 
 export default MainNavigation = () => {
   const Stack = createNativeStackNavigator();
@@ -46,15 +57,85 @@ export default MainNavigation = () => {
     );
   }
 
-  function AdminStack() {
+  function AdminMainStack() {
     return (
-      <Stack.Navigator initialRouteName="AdminHomeScreen">
+      <Stack.Navigator
+        initialRouteName="AdminHomeScreen"
+        headerMode="screen"
+        screenOptions={{
+          header: ({ options, route, back, navigation }) => (
+            <HeaderBar
+              options={options}
+              route={route}
+              back={back}
+              navigation={navigation}
+            />
+          ),
+        }}
+      >
         <Stack.Screen
           name="AdminHomeScreen"
           component={AdminHomeScreen}
-          options={{ headerShown: false }}
+          options={{ headerTitle: "Home" }}
+        />
+        <Stack.Screen
+          name="VerifyScreen"
+          component={VerifyScreen}
+          options={{ headerTitle: "Verify Registration" }}
+        />
+        <Stack.Screen
+          name="TopupScreen"
+          component={TopupScreen}
+          options={{ headerTitle: "Topup Credit" }}
+        />
+        <Stack.Screen
+          name="ManageMenuScreen"
+          component={ManageMenuScreen}
+          options={{ headerTitle: "Manage Menu" }}
+        />
+        <Stack.Screen
+          name="MenuAddScreen"
+          component={MenuAddScreen}
+          options={{ headerTitle: "Add Menu" }}
+        />
+        <Stack.Screen
+          name="MenuDetailScreen"
+          component={MenuDetailScreen}
+          options={{ headerTitle: "Menu Detail" }}
+        />
+        <Stack.Screen
+          name="StaffCreditScreen"
+          component={StaffCreditScreen}
+          options={{ headerTitle: "Staff Credit" }}
         />
       </Stack.Navigator>
+    );
+  }
+
+  function AdminStack() {
+    return (
+      <Tab.Navigator
+        initialRouteName="Home"
+        screenOptions={({ route, navigation }) => ({
+          tabBarIcon: ({ focused, color, size }) => {
+            let iconName;
+
+            if (route.name === "Home") {
+              iconName = focused ? "home" : "home-outline";
+            } else if (route.name === "Order") {
+              iconName = focused ? "time" : "time-outline";
+            }
+
+            return <Ionicons name={iconName} size={size} color={color} />;
+          },
+          headerShown: false,
+          unmountOnBlur: true,
+          tabBarActiveTintColor: colors.navigationBottom,
+        })}
+      >
+        <Tab.Screen name="Home" component={AdminMainStack} />
+        <Tab.Screen name="Order" component={Template} />
+      </Tab.Navigator>
     );
   }
 

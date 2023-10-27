@@ -15,6 +15,13 @@ import {
   signInWithEmailAndPassword,
   sendPasswordResetEmail,
 } from "firebase/auth";
+import {
+  getStorage,
+  deleteObject,
+  ref as sRef,
+  uploadBytes,
+  getDownloadURL,
+} from "firebase/storage";
 import ReactNativeAsyncStorage from "@react-native-async-storage/async-storage";
 
 // Firebase Setup
@@ -34,6 +41,7 @@ const db = getDatabase(app);
 const auth = initializeAuth(app, {
   persistence: getReactNativePersistence(ReactNativeAsyncStorage),
 });
+const storage = getStorage(app);
 
 // Check is complete initialize
 let isInit = false;
@@ -59,6 +67,19 @@ onValue(refUsersList, (snapshot) => {
   }
   userList = data ?? [];
   isInit = true;
+});
+
+// Fetch menu list
+let menuList = [];
+const refMenuList = ref(db, "menu");
+onValue(refMenuList, (snapshot) => {
+  let data;
+  try {
+    data = Object.values(snapshot.val());
+  } catch (error) {
+    data = snapshot.val();
+  }
+  menuList = data ?? [];
 });
 
 // Get & store user detail
@@ -126,10 +147,80 @@ const userResetPassword = async (email) => {
     });
 };
 
+// Update user status
+const userUpdateStatus = async (userID, status) => {
+  update(ref(db, `users/${userID}/`), { status });
+};
+
+// Update user credit
+const userUpdateCredit = async (userID, credit) => {
+  update(ref(db, `users/${userID}/`), { credit });
+};
+
+// Adding new menu
+const onAddMenu = async (image, name, description, price) => {
+  const menuID = push(ref(db, `menu/`), {}).key;
+  const imageURL = await uploadImage(image, menuID);
+  set(ref(db, `menu/${menuID}`), {
+    id: menuID,
+    name,
+    description,
+    price,
+    imageURL,
+  });
+};
+
+// Update menu
+const onUpdateMenu = async (menuID, image, name, description, price) => {
+  const imageURL = image.uri.includes("https")
+    ? image.uri
+    : await uploadImage(image, menuID);
+  update(ref(db, `menu/${menuID}`), {
+    name,
+    description,
+    price,
+    imageURL,
+  });
+};
+
+// Delete menu
+const onDeleteMenu = async (menuID) => {
+  remove(ref(db, `menu/${menuID}`));
+  deleteObject(sRef(storage, `/menuImages/${menuID}`));
+};
+
+// Upload Image
+const uploadImage = async (file, menuID) => {
+  const blob = await new Promise((resolve, reject) => {
+    const xhr = new XMLHttpRequest();
+    xhr.onload = function () {
+      resolve(xhr.response);
+    };
+    xhr.onerror = function (e) {
+      console.log(e);
+      reject(new TypeError("Network request failed"));
+    };
+    xhr.responseType = "blob";
+    xhr.open("GET", file.uri, true);
+    xhr.send(null);
+  });
+  return await uploadBytes(sRef(storage, `/menuImages/${menuID}`), blob).then(
+    (snapshot) =>
+      getDownloadURL(snapshot.ref).then((downloadURL) => downloadURL)
+  );
+};
+
 export {
   getUserDetail,
   checkDoneInit,
   userRegister,
   userLogin,
   userResetPassword,
+  userUpdateStatus,
+  userUpdateCredit,
+  onAddMenu,
+  onUpdateMenu,
+  onDeleteMenu,
+  userList,
+  menuList,
 };

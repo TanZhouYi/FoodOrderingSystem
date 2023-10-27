@@ -19,6 +19,9 @@ import ResetPassScreen from "../screens/auth/ResetPassScreen";
 import AdminHomeScreen from "../screens/admin/AdminHomeScreen";
 import VerifyScreen from "../screens/admin/VerifyScreen";
 import TopupScreen from "../screens/admin/TopupScreen";
+import ManageMenuScreen from "../screens/admin/ManageMenuScreen";
+import MenuAddScreen from "../screens/admin/MenuAddScreen";
+import MenuDetailScreen from "../screens/admin/MenuDetailScreen";
 
 // User Pages
 import AccountPendingScreen from "../screens/user/AccountPendingScreen";
@@ -83,6 +86,21 @@ export default MainNavigation = () => {
           name="TopupScreen"
           component={TopupScreen}
           options={{ headerTitle: "Topup Credit" }}
+        />
+        <Stack.Screen
+          name="ManageMenuScreen"
+          component={ManageMenuScreen}
+          options={{ headerTitle: "Manage Menu" }}
+        />
+        <Stack.Screen
+          name="MenuAddScreen"
+          component={MenuAddScreen}
+          options={{ headerTitle: "Add Menu" }}
+        />
+        <Stack.Screen
+          name="MenuDetailScreen"
+          component={MenuDetailScreen}
+          options={{ headerTitle: "Menu Detail" }}
         />
       </Stack.Navigator>
     );

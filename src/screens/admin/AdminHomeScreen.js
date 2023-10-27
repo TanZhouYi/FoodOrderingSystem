@@ -59,7 +59,9 @@ const AdminHomeScreen = ({ route, navigation }) => {
               <Text variant="labelLarge">Topup Credit</Text>
             </View>
           </TouchableOpacity>
-          <TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => navigation.navigate("ManageMenuScreen")}
+          >
             <View style={styles.btnContainer}>
               <Ionicons
                 name="newspaper-outline"

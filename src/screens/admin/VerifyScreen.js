@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
-import { Alert, StyleSheet, View, Dimensions } from "react-native";
-import { Button, Card, Text } from "react-native-paper";
+import { Alert, StyleSheet, View, Dimensions, ScrollView } from "react-native";
+import { Button, Card, Text, Searchbar } from "react-native-paper";
 import colors from "../../constants/colors";
 import { userList, userUpdateStatus } from "../../database/firebase";
 
@@ -8,9 +8,9 @@ const VerifyScreen = ({ route, navigation }) => {
   const [pendingList, setPendingList] = useState(
     userList.filter((item) => item.status == "Pending")
   );
+  const [searchText, setSearchText] = useState("");
 
   useEffect(() => {
-    getPendingList();
     navigation.setOptions({
       rightIcons: [
         {
@@ -29,8 +29,18 @@ const VerifyScreen = ({ route, navigation }) => {
   }, []);
 
   // Getting Pending Users
-  const getPendingList = () => {
-    setPendingList(userList.filter((item) => item.status == "Pending"));
+  const getPendingList = (userID = false) => {
+    if (userID && userID != "") {
+      setSearchText(userID);
+      setPendingList(
+        userList.filter(
+          (item) => item.status == "Pending" && item.userID.includes(userID)
+        )
+      );
+    } else {
+      setSearchText("");
+      setPendingList(userList.filter((item) => item.status == "Pending"));
+    }
   };
 
   // Update user's status
@@ -47,14 +57,14 @@ const VerifyScreen = ({ route, navigation }) => {
   const RenderList = () => {
     if (pendingList.length == 0)
       return (
-        <Card>
+        <Card style={styles.cardContainer}>
           <Card.Content>
-            <Text style={{ alignSelf: "center" }}>No Request Found</Text>
+            <Text style={{ alignSelf: "center" }}>No Record Found</Text>
           </Card.Content>
         </Card>
       );
     return pendingList.map((item, index) => (
-      <Card key={index}>
+      <Card key={index} style={styles.cardContainer}>
         <Card.Content>
           <View
             style={{
@@ -82,9 +92,15 @@ const VerifyScreen = ({ route, navigation }) => {
 
   return (
     <View style={{ flex: 1 }}>
-      <View style={styles.container}>
+      <ScrollView style={styles.container}>
+        <Searchbar
+          placeholder="Search by ID"
+          onChangeText={getPendingList}
+          value={searchText}
+        />
         <RenderList />
-      </View>
+        <Text style={{ marginVertical: 20 }}></Text>
+      </ScrollView>
     </View>
   );
 };
@@ -92,9 +108,13 @@ const VerifyScreen = ({ route, navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: Dimensions.get("window").width * 0.1,
+    padding: Dimensions.get("window").width * 0.05,
     backgroundColor: colors.bgColor,
     gap: 15,
+  },
+  cardContainer: {
+    marginHorizontal: Dimensions.get("window").width * 0.02,
+    marginTop: Dimensions.get("window").height * 0.02,
   },
 });
 

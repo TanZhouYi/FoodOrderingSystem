@@ -50,7 +50,7 @@ const AdminHomeScreen = ({ route, navigation }) => {
               <Text variant="labelLarge">Verify Registration</Text>
             </View>
           </TouchableOpacity>
-          <TouchableOpacity>
+          <TouchableOpacity onPress={() => navigation.navigate("TopupScreen")}>
             <View style={styles.btnContainer}>
               <Ionicons
                 name="wallet-outline"
@@ -66,6 +66,15 @@ const AdminHomeScreen = ({ route, navigation }) => {
                 size={Dimensions.get("window").height * 0.04}
               />
               <Text variant="labelLarge">Manage Menu</Text>
+            </View>
+          </TouchableOpacity>
+          <TouchableOpacity>
+            <View style={styles.btnContainer}>
+              <Ionicons
+                name="card-outline"
+                size={Dimensions.get("window").height * 0.04}
+              />
+              <Text variant="labelLarge">Staff Credit</Text>
             </View>
           </TouchableOpacity>
           <TouchableOpacity>

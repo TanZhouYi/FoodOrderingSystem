@@ -18,6 +18,7 @@ import ResetPassScreen from "../screens/auth/ResetPassScreen";
 // Admin Pages
 import AdminHomeScreen from "../screens/admin/AdminHomeScreen";
 import VerifyScreen from "../screens/admin/VerifyScreen";
+import TopupScreen from "../screens/admin/TopupScreen";
 
 // User Pages
 import AccountPendingScreen from "../screens/user/AccountPendingScreen";
@@ -77,6 +78,11 @@ export default MainNavigation = () => {
           name="VerifyScreen"
           component={VerifyScreen}
           options={{ headerTitle: "Verify Registration" }}
+        />
+        <Stack.Screen
+          name="TopupScreen"
+          component={TopupScreen}
+          options={{ headerTitle: "Topup Credit" }}
         />
       </Stack.Navigator>
     );

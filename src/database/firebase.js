@@ -131,6 +131,11 @@ const userUpdateStatus = async (userID, status) => {
   update(ref(db, `users/${userID}/`), { status });
 };
 
+// Update user credit
+const userUpdateCredit = async (userID, credit) => {
+  update(ref(db, `users/${userID}/`), { credit });
+};
+
 export {
   getUserDetail,
   checkDoneInit,
@@ -138,5 +143,6 @@ export {
   userLogin,
   userResetPassword,
   userUpdateStatus,
+  userUpdateCredit,
   userList,
 };

@@ -77,7 +77,7 @@ const MenuAddScreen = ({ route, navigation }) => {
           />
           <TextInput
             mode="outlined"
-            label="Price"
+            label="Price (RM)"
             keyboardType="number-pad"
             onChangeText={(text) =>
               !isNaN(text) && setPrice(text.replace(/\s/, ""))

@@ -17,6 +17,7 @@ import {
 } from "firebase/auth";
 import {
   getStorage,
+  deleteObject,
   ref as sRef,
   uploadBytes,
   getDownloadURL,
@@ -169,6 +170,25 @@ const onAddMenu = async (image, name, description, price) => {
   });
 };
 
+// Update menu
+const onUpdateMenu = async (menuID, image, name, description, price) => {
+  const imageURL = image.uri.includes("https")
+    ? image.uri
+    : await uploadImage(image, menuID);
+  update(ref(db, `menu/${menuID}`), {
+    name,
+    description,
+    price,
+    imageURL,
+  });
+};
+
+// Delete menu
+const onDeleteMenu = async (menuID) => {
+  remove(ref(db, `menu/${menuID}`));
+  deleteObject(sRef(storage, `/menuImages/${menuID}`));
+};
+
 // Upload Image
 const uploadImage = async (file, menuID) => {
   const blob = await new Promise((resolve, reject) => {
@@ -199,6 +219,8 @@ export {
   userUpdateStatus,
   userUpdateCredit,
   onAddMenu,
+  onUpdateMenu,
+  onDeleteMenu,
   userList,
   menuList,
 };

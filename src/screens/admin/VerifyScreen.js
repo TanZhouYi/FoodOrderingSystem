@@ -2,7 +2,11 @@ import { useState, useEffect } from "react";
 import { Alert, StyleSheet, View, Dimensions, ScrollView } from "react-native";
 import { Button, Card, Text, Searchbar } from "react-native-paper";
 import colors from "../../constants/colors";
-import { userList, userUpdateStatus } from "../../database/firebase";
+import {
+  userList,
+  userUpdateStatus,
+  onPushNotification,
+} from "../../database/firebase";
 
 const VerifyScreen = ({ route, navigation }) => {
   const [pendingList, setPendingList] = useState(
@@ -49,8 +53,20 @@ const VerifyScreen = ({ route, navigation }) => {
   const onUpdate = (userID = false) => {
     if (userID) {
       userUpdateStatus(userID, "Active");
+      onPushNotification(
+        userID,
+        "Greetings🎉",
+        "Your account has been activated"
+      );
     } else {
-      pendingList.map((item) => userUpdateStatus(item.id, "Active"));
+      pendingList.map((item) => {
+        userUpdateStatus(item.id, "Active");
+        onPushNotification(
+          item.id,
+          "Greetings🎉",
+          "Your account has been activated"
+        );
+      });
     }
     getPendingList();
   };

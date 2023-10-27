@@ -23,6 +23,7 @@ import {
   getDownloadURL,
 } from "firebase/storage";
 import ReactNativeAsyncStorage from "@react-native-async-storage/async-storage";
+import * as Notifications from "expo-notifications";
 
 // Firebase Setup
 const firebaseConfig = {
@@ -210,6 +211,38 @@ const uploadImage = async (file, menuID) => {
   );
 };
 
+// Push Notification
+const onPushNotification = (userID, title, body) => {
+  push(ref(db, `users/${userID}/msgList`), { title, body });
+};
+
+// Receive Notification
+const onReceiveNotification = (userID) => {
+  onValue(ref(db, `users/${userID}/msgList`), (snapshot) => {
+    let data;
+    try {
+      data = Object.values(snapshot.val());
+    } catch (error) {
+      data = snapshot.val();
+    }
+    let msgList = data ?? [];
+
+    if (msgList.length != 0) {
+      msgList.map(
+        async (item) =>
+          await Notifications.scheduleNotificationAsync({
+            content: {
+              title: item.title,
+              body: item.body,
+            },
+            trigger: null,
+          })
+      );
+      remove(ref(db, `users/${userID}/msgList`));
+    }
+  });
+};
+
 export {
   getUserDetail,
   checkDoneInit,
@@ -221,6 +254,8 @@ export {
   onAddMenu,
   onUpdateMenu,
   onDeleteMenu,
+  onPushNotification,
+  onReceiveNotification,
   userList,
   menuList,
 };

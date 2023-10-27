@@ -19,7 +19,7 @@ const TopupScreen = ({ route, navigation }) => {
           (item) =>
             item.role == "Student" &&
             item.status == "Active" &&
-            item.userID.includes(userID)
+            item.userID.toLowerCase().includes(userID.toLowerCase())
         )
       );
     } else {

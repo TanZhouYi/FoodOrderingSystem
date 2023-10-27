@@ -1,63 +1,63 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Alert, StyleSheet, View, Dimensions, ScrollView } from "react-native";
-import { Button, Card, Text, Searchbar } from "react-native-paper";
+import { Button, Card, Text, Searchbar, TextInput } from "react-native-paper";
 import colors from "../../constants/colors";
-import { userList, userUpdateStatus } from "../../database/firebase";
+import { userList, userUpdateCredit } from "../../database/firebase";
 
-const VerifyScreen = ({ route, navigation }) => {
-  const [pendingList, setPendingList] = useState(
-    userList.filter((item) => item.status == "Pending")
+const StaffCreditScreen = ({ route, navigation }) => {
+  const [staffList, setStaffList] = useState(
+    userList.filter(
+      (item) =>
+        item.role == "Staff" && item.status == "Active" && item.credit != 0
+    )
   );
   const [searchText, setSearchText] = useState("");
 
-  useEffect(() => {
-    navigation.setOptions({
-      rightIcons: [
-        {
-          icon: "select-all",
-          onPress: () =>
-            Alert.alert("Warning", "Are you sure want to accept all?", [
-              { text: "Cancel", style: "cancel" },
-              {
-                text: "Yes",
-                onPress: onUpdate,
-              },
-            ]),
-        },
-      ],
-    });
-  }, []);
-
-  // Getting Pending Users
-  const getPendingList = (userID = false) => {
+  // Getting Staff List
+  const getStaffList = (userID) => {
     if (userID && userID != "") {
       setSearchText(userID);
-      setPendingList(
+      setStaffList(
         userList.filter(
           (item) =>
-            item.status == "Pending" &&
+            item.role == "Staff" &&
+            item.status == "Active" &&
+            item.credit != 0 &&
             item.userID.toLowerCase().includes(userID.toLowerCase())
         )
       );
     } else {
       setSearchText("");
-      setPendingList(userList.filter((item) => item.status == "Pending"));
+      setStaffList(
+        userList.filter(
+          (item) =>
+            item.role == "Staff" && item.status == "Active" && item.credit != 0
+        )
+      );
     }
   };
 
-  // Update user's status
-  const onUpdate = (userID = false) => {
-    if (userID) {
-      userUpdateStatus(userID, "Active");
-    } else {
-      pendingList.map((item) => userUpdateStatus(item.id, "Active"));
-    }
-    getPendingList();
+  // Reset Staff Credit
+  const onResetCredit = (ID) => {
+    Alert.alert(
+      "Warning",
+      "Are you sure want reset this staff credit?\n\nPlease make sure it has been deducted from their salary.",
+      [
+        { text: "Cancel", style: "cancel" },
+        {
+          text: "Yes",
+          onPress: () => {
+            userUpdateCredit(ID, 0);
+            getStaffList();
+          },
+        },
+      ]
+    );
   };
 
-  // Render Pending List
-  const RenderList = () => {
-    if (pendingList.length == 0)
+  // Render Staff List
+  const RenderStaffList = () => {
+    if (staffList.length == 0)
       return (
         <Card style={styles.cardContainer}>
           <Card.Content>
@@ -65,7 +65,7 @@ const VerifyScreen = ({ route, navigation }) => {
           </Card.Content>
         </Card>
       );
-    return pendingList.map((item, index) => (
+    return staffList.map((item, index) => (
       <Card key={index} style={styles.cardContainer}>
         <Card.Content>
           <View
@@ -79,13 +79,15 @@ const VerifyScreen = ({ route, navigation }) => {
               <Text variant="labelLarge">{item.userID}</Text>
             </View>
             <View>
-              <Text>Role:</Text>
-              <Text variant="labelLarge">{item.role}</Text>
+              <Text>Credit:</Text>
+              <Text variant="labelLarge">
+                RM {parseFloat(item.credit).toFixed(2)}
+              </Text>
             </View>
           </View>
           <Text></Text>
-          <Button mode="contained" onPress={() => onUpdate(item.id)}>
-            Accept
+          <Button mode="contained" onPress={() => onResetCredit(item.id)}>
+            Reset
           </Button>
         </Card.Content>
       </Card>
@@ -97,10 +99,10 @@ const VerifyScreen = ({ route, navigation }) => {
       <ScrollView style={styles.container}>
         <Searchbar
           placeholder="Search by ID"
-          onChangeText={getPendingList}
+          onChangeText={getStaffList}
           value={searchText}
         />
-        <RenderList />
+        <RenderStaffList />
         <Text style={{ marginVertical: 20 }}></Text>
       </ScrollView>
     </View>
@@ -120,4 +122,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default VerifyScreen;
+export default StaffCreditScreen;

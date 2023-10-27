@@ -22,6 +22,7 @@ import TopupScreen from "../screens/admin/TopupScreen";
 import ManageMenuScreen from "../screens/admin/ManageMenuScreen";
 import MenuAddScreen from "../screens/admin/MenuAddScreen";
 import MenuDetailScreen from "../screens/admin/MenuDetailScreen";
+import StaffCreditScreen from "../screens/admin/StaffCreditScreen";
 
 // User Pages
 import AccountPendingScreen from "../screens/user/AccountPendingScreen";
@@ -101,6 +102,11 @@ export default MainNavigation = () => {
           name="MenuDetailScreen"
           component={MenuDetailScreen}
           options={{ headerTitle: "Menu Detail" }}
+        />
+        <Stack.Screen
+          name="StaffCreditScreen"
+          component={StaffCreditScreen}
+          options={{ headerTitle: "Staff Credit" }}
         />
       </Stack.Navigator>
     );

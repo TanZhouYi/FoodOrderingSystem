@@ -70,7 +70,9 @@ const AdminHomeScreen = ({ route, navigation }) => {
               <Text variant="labelLarge">Manage Menu</Text>
             </View>
           </TouchableOpacity>
-          <TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => navigation.navigate("StaffCreditScreen")}
+          >
             <View style={styles.btnContainer}>
               <Ionicons
                 name="card-outline"

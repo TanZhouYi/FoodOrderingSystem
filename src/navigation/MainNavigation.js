@@ -23,6 +23,7 @@ import ManageMenuScreen from "../screens/admin/ManageMenuScreen";
 import MenuAddScreen from "../screens/admin/MenuAddScreen";
 import MenuDetailScreen from "../screens/admin/MenuDetailScreen";
 import StaffCreditScreen from "../screens/admin/StaffCreditScreen";
+import AdminOrderScreen from "../screens/admin/AdminOrderScreen";
 
 // User Pages
 import AccountPendingScreen from "../screens/user/AccountPendingScreen";
@@ -116,6 +117,31 @@ export default MainNavigation = () => {
     );
   }
 
+  function AdminOrderStack() {
+    return (
+      <Stack.Navigator
+        initialRouteName="AdminOrderScreen"
+        headerMode="screen"
+        screenOptions={{
+          header: ({ options, route, back, navigation }) => (
+            <HeaderBar
+              options={options}
+              route={route}
+              back={back}
+              navigation={navigation}
+            />
+          ),
+        }}
+      >
+        <Stack.Screen
+          name="AdminOrderScreen"
+          component={AdminOrderScreen}
+          options={{ headerTitle: "Order" }}
+        />
+      </Stack.Navigator>
+    );
+  }
+
   function AdminStack() {
     return (
       <Tab.Navigator
@@ -138,7 +164,7 @@ export default MainNavigation = () => {
         })}
       >
         <Tab.Screen name="Home" component={AdminMainStack} />
-        <Tab.Screen name="Order" component={Template} />
+        <Tab.Screen name="Order" component={AdminOrderStack} />
       </Tab.Navigator>
     );
   }

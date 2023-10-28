@@ -276,6 +276,11 @@ const onCartSubmit = (detail) => {
   });
 };
 
+// Update order status
+const updateOrderStatus = async (orderID, status) => {
+  update(ref(db, `order/${orderID}/`), { status });
+};
+
 export {
   onValue,
   ref,
@@ -295,6 +300,7 @@ export {
   onCartUpdate,
   onCartRemove,
   onCartSubmit,
+  updateOrderStatus,
   userList,
   menuList,
 };

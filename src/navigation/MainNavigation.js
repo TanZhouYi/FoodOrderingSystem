@@ -30,6 +30,7 @@ import AccountDetailScreen from "../screens/user/AccountDetailScreen";
 import UserHomeScreen from "../screens/user/UserHomeScreen";
 import MenuOrderScreen from "../screens/user/MenuOrderScreen";
 import CartScreen from "../screens/user/CartScreen";
+import UserOrderScreen from "../screens/user/UserOrderScreen";
 
 // Template Page
 import Template from "../screens/Template";
@@ -207,6 +208,31 @@ export default MainNavigation = () => {
     );
   }
 
+  function UserOrderStack() {
+    return (
+      <Stack.Navigator
+        initialRouteName="UserOrderScreen"
+        headerMode="screen"
+        screenOptions={{
+          header: ({ options, route, back, navigation }) => (
+            <HeaderBar
+              options={options}
+              route={route}
+              back={back}
+              navigation={navigation}
+            />
+          ),
+        }}
+      >
+        <Stack.Screen
+          name="UserOrderScreen"
+          component={UserOrderScreen}
+          options={{ headerTitle: "Order" }}
+        />
+      </Stack.Navigator>
+    );
+  }
+
   function UserStack() {
     return (
       <Tab.Navigator
@@ -232,7 +258,7 @@ export default MainNavigation = () => {
       >
         <Tab.Screen name="Menu" component={UserMainStack} />
         <Tab.Screen name="Cart" component={UserCartStack} />
-        <Tab.Screen name="Order" component={Template} />
+        <Tab.Screen name="Order" component={UserOrderStack} />
       </Tab.Navigator>
     );
   }

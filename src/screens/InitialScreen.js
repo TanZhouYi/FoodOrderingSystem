@@ -38,7 +38,7 @@ const InitialScreen = ({ route, navigation }) => {
 
         // Navigate to screen
         if (userDetail.status != "Active") {
-          return navigation.replace("AccountPendingScreen");
+          return navigation.replace("AccountPendingScreen", { userDetail });
         }
         if (userDetail.role == "Admin") {
           navigation.replace("AdminStack");

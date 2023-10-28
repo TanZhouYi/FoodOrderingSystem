@@ -24,6 +24,7 @@ import {
 } from "firebase/storage";
 import ReactNativeAsyncStorage from "@react-native-async-storage/async-storage";
 import * as Notifications from "expo-notifications";
+import moment from "moment";
 
 // Firebase Setup
 const firebaseConfig = {
@@ -243,7 +244,42 @@ const onReceiveNotification = (userID) => {
   });
 };
 
+// Update user cart
+const onCartUpdate = (menuDetail, amount) => {
+  set(ref(db, `users/${userID}/cart/${menuDetail.id}`), {
+    id: menuDetail.id,
+    name: menuDetail.name,
+    price: menuDetail.price,
+    amount,
+  });
+};
+
+// Remove user cart
+const onCartRemove = (menuID) => {
+  remove(ref(db, `users/${userID}/cart/${menuID}`));
+};
+
+// Submit new cart
+const onCartSubmit = (detail) => {
+  let orderID = push(ref(db, `order`), {}).key;
+  set(ref(db, `order/${orderID}`), {
+    id: orderID,
+    userID: detail.userID,
+    amount: detail.amount,
+    items: detail.items,
+    status: "Pending",
+    createdTime: moment().format("X"),
+  });
+  remove(ref(db, `users/${userID}/cart`));
+  update(ref(db, `users/${userID}/`), {
+    credit: detail.credit,
+  });
+};
+
 export {
+  onValue,
+  ref,
+  db,
   getUserDetail,
   checkDoneInit,
   userRegister,
@@ -256,6 +292,9 @@ export {
   onDeleteMenu,
   onPushNotification,
   onReceiveNotification,
+  onCartUpdate,
+  onCartRemove,
+  onCartSubmit,
   userList,
   menuList,
 };

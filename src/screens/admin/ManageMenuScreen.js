@@ -98,7 +98,7 @@ const ManageMenuScreen = ({ route, navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: Dimensions.get("window").width * 0.1,
+    padding: Dimensions.get("window").width * 0.05,
     backgroundColor: colors.bgColor,
     gap: 15,
   },
@@ -111,10 +111,10 @@ const styles = StyleSheet.create({
   },
   cardContainer: {
     borderRadius: 12,
-    width: Dimensions.get("window").width * 0.385,
+    width: Dimensions.get("window").width * 0.43,
   },
   cardCover: {
-    height: Dimensions.get("window").width * 0.4,
+    height: Dimensions.get("window").width * 0.35,
   },
 });
 

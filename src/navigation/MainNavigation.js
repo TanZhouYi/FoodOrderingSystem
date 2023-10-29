@@ -24,6 +24,7 @@ import MenuAddScreen from "../screens/admin/MenuAddScreen";
 import MenuDetailScreen from "../screens/admin/MenuDetailScreen";
 import StaffCreditScreen from "../screens/admin/StaffCreditScreen";
 import AdminOrderScreen from "../screens/admin/AdminOrderScreen";
+import SalesReportScreen from "../screens/admin/SalesReportScreen";
 
 // User Pages
 import AccountPendingScreen from "../screens/user/AccountPendingScreen";
@@ -112,6 +113,11 @@ export default MainNavigation = () => {
           name="StaffCreditScreen"
           component={StaffCreditScreen}
           options={{ headerTitle: "Staff Credit" }}
+        />
+        <Stack.Screen
+          name="SalesReportScreen"
+          component={SalesReportScreen}
+          options={{ headerTitle: "Sales Report" }}
         />
       </Stack.Navigator>
     );

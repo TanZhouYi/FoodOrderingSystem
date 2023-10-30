@@ -1,5 +1,10 @@
 import { useEffect } from "react";
-import { StyleSheet, View, ActivityIndicator } from "react-native";
+import {
+  StyleSheet,
+  View,
+  ActivityIndicator,
+  ToastAndroid,
+} from "react-native";
 import * as Notifications from "expo-notifications";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import colors from "../constants/colors";
@@ -20,6 +25,23 @@ const InitialScreen = ({ route, navigation }) => {
         shouldSetBadge: true,
       }),
     });
+
+    // Request Notification Permissions
+    (async () => {
+      const { status: existingStatus } =
+        await Notifications.getPermissionsAsync();
+      let finalStatus = existingStatus;
+      if (existingStatus !== "granted") {
+        const { status } = await Notifications.requestPermissionsAsync();
+        finalStatus = status;
+      }
+      if (finalStatus !== "granted") {
+        ToastAndroid.show(
+          "No permission to push notifications",
+          ToastAndroid.SHORT
+        );
+      }
+    })();
 
     const unsubscribe = navigation.addListener("focus", async () => {
       // Check user login status

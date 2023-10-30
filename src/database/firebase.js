@@ -23,6 +23,8 @@ import {
   getDownloadURL,
 } from "firebase/storage";
 import ReactNativeAsyncStorage from "@react-native-async-storage/async-storage";
+import * as Notifications from "expo-notifications";
+import moment from "moment";
 
 // Firebase Setup
 const firebaseConfig = {
@@ -210,7 +212,79 @@ const uploadImage = async (file, menuID) => {
   );
 };
 
+// Push Notification
+const onPushNotification = (userID, title, body) => {
+  push(ref(db, `users/${userID}/msgList`), { title, body });
+};
+
+// Receive Notification
+const onReceiveNotification = (userID) => {
+  onValue(ref(db, `users/${userID}/msgList`), (snapshot) => {
+    let data;
+    try {
+      data = Object.values(snapshot.val());
+    } catch (error) {
+      data = snapshot.val();
+    }
+    let msgList = data ?? [];
+
+    if (msgList.length != 0) {
+      msgList.map(
+        async (item) =>
+          await Notifications.scheduleNotificationAsync({
+            content: {
+              title: item.title,
+              body: item.body,
+            },
+            trigger: null,
+          })
+      );
+      remove(ref(db, `users/${userID}/msgList`));
+    }
+  });
+};
+
+// Update user cart
+const onCartUpdate = (menuDetail, amount) => {
+  set(ref(db, `users/${userID}/cart/${menuDetail.id}`), {
+    id: menuDetail.id,
+    name: menuDetail.name,
+    price: menuDetail.price,
+    amount,
+  });
+};
+
+// Remove user cart
+const onCartRemove = (menuID) => {
+  remove(ref(db, `users/${userID}/cart/${menuID}`));
+};
+
+// Submit new cart
+const onCartSubmit = (detail) => {
+  let orderID = push(ref(db, `order`), {}).key;
+  set(ref(db, `order/${orderID}`), {
+    id: orderID,
+    userID: detail.userID,
+    amount: detail.amount,
+    items: detail.items,
+    status: "Pending",
+    createdTime: moment().format("X"),
+  });
+  remove(ref(db, `users/${userID}/cart`));
+  update(ref(db, `users/${userID}/`), {
+    credit: detail.credit,
+  });
+};
+
+// Update order status
+const updateOrderStatus = async (orderID, status) => {
+  update(ref(db, `order/${orderID}/`), { status });
+};
+
 export {
+  onValue,
+  ref,
+  db,
   getUserDetail,
   checkDoneInit,
   userRegister,
@@ -221,6 +295,12 @@ export {
   onAddMenu,
   onUpdateMenu,
   onDeleteMenu,
+  onPushNotification,
+  onReceiveNotification,
+  onCartUpdate,
+  onCartRemove,
+  onCartSubmit,
+  updateOrderStatus,
   userList,
   menuList,
 };

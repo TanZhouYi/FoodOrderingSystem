@@ -2,7 +2,11 @@ import { useState } from "react";
 import { Alert, StyleSheet, View, Dimensions, ScrollView } from "react-native";
 import { Button, Card, Text, Searchbar, TextInput } from "react-native-paper";
 import colors from "../../constants/colors";
-import { userList, userUpdateCredit } from "../../database/firebase";
+import {
+  userList,
+  userUpdateCredit,
+  onPushNotification,
+} from "../../database/firebase";
 
 const StaffCreditScreen = ({ route, navigation }) => {
   const [staffList, setStaffList] = useState(
@@ -48,6 +52,11 @@ const StaffCreditScreen = ({ route, navigation }) => {
           text: "Yes",
           onPress: () => {
             userUpdateCredit(ID, 0);
+            onPushNotification(
+              ID,
+              "Credit Reset",
+              "Your credit has been reset."
+            );
             getStaffList();
           },
         },

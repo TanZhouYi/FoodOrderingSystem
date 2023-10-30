@@ -81,7 +81,9 @@ const AdminHomeScreen = ({ route, navigation }) => {
               <Text variant="labelLarge">Staff Credit</Text>
             </View>
           </TouchableOpacity>
-          <TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => navigation.navigate("SalesReportScreen")}
+          >
             <View style={styles.btnContainer}>
               <Ionicons
                 name="analytics-outline"

@@ -3,7 +3,11 @@ import { StyleSheet, View, ActivityIndicator } from "react-native";
 import * as Notifications from "expo-notifications";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import colors from "../constants/colors";
-import { checkDoneInit, getUserDetail } from "../database/firebase";
+import {
+  checkDoneInit,
+  getUserDetail,
+  onReceiveNotification,
+} from "../database/firebase";
 
 const InitialScreen = ({ route, navigation }) => {
   const { isLogout = false } = route.params ?? {};
@@ -28,8 +32,13 @@ const InitialScreen = ({ route, navigation }) => {
         await checkDoneInit();
         let userData = JSON.parse(userInfo);
         let userDetail = getUserDetail(userData.id);
+
+        // Active receive notification
+        onReceiveNotification(userDetail.id);
+
+        // Navigate to screen
         if (userDetail.status != "Active") {
-          return navigation.replace("AccountPendingScreen");
+          return navigation.replace("AccountPendingScreen", { userDetail });
         }
         if (userDetail.role == "Admin") {
           navigation.replace("AdminStack");

@@ -2,27 +2,17 @@ import { StyleSheet, View, Dimensions } from "react-native";
 import { Text, Button, Card, Divider } from "react-native-paper";
 import colors from "../../constants/colors";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { getUserDetail } from "../../database/firebase";
 
-const AccountPendingScreen = ({ route, navigation }) => {
-  const userDetail = route.params?.userDetail;
+const AccountDetailScreen = ({ route, navigation }) => {
+  const userDetail = getUserDetail();
+
   return (
     <View style={{ flex: 1 }}>
       <View style={styles.container}>
         <Card>
           <Card.Content style={{ gap: 20 }}>
-            <MaterialCommunityIcons
-              name="shield-account-variant-outline"
-              size={Dimensions.get("window").width * 0.2}
-              style={{ alignSelf: "center" }}
-            />
-            <Text variant="titleMedium">
-              Your account is pending activation.
-            </Text>
-            <Text variant="bodyMedium">
-              You will be notified when the administrator activates it.
-            </Text>
-            <Divider />
-            <View style={{ gap: 5 }}>
+            <View style={{ gap: 10 }}>
               <View>
                 <Text>{userDetail.role} ID:</Text>
                 <Text variant="labelLarge">{userDetail.userID}</Text>
@@ -32,9 +22,20 @@ const AccountPendingScreen = ({ route, navigation }) => {
                 <Text variant="labelLarge">{userDetail.email}</Text>
               </View>
               <View>
+                <Text>Phone:</Text>
+                <Text variant="labelLarge">{userDetail.phone}</Text>
+              </View>
+              <View>
                 <Text>Role:</Text>
                 <Text variant="labelLarge">{userDetail.role}</Text>
               </View>
+            </View>
+            <Divider />
+            <View>
+              <Text>Credit:</Text>
+              <Text variant="labelLarge">{`RM ${parseFloat(
+                userDetail.credit
+              ).toFixed(2)}`}</Text>
             </View>
             <Divider />
             <Button
@@ -61,4 +62,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default AccountPendingScreen;
+export default AccountDetailScreen;

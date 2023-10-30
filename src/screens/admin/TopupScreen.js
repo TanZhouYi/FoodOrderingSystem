@@ -2,7 +2,11 @@ import { useState } from "react";
 import { Alert, StyleSheet, View, Dimensions, ScrollView } from "react-native";
 import { Button, Card, Text, Searchbar, TextInput } from "react-native-paper";
 import colors from "../../constants/colors";
-import { userList, userUpdateCredit } from "../../database/firebase";
+import {
+  userList,
+  userUpdateCredit,
+  onPushNotification,
+} from "../../database/firebase";
 
 const TopupScreen = ({ route, navigation }) => {
   const [studentList, setStudentList] = useState(
@@ -46,6 +50,13 @@ const TopupScreen = ({ route, navigation }) => {
           onPress: () => {
             let credit = parseFloat(prevCredit) + parseFloat(newCredit);
             userUpdateCredit(ID, credit);
+            onPushNotification(
+              ID,
+              "Successful top-up💰",
+              `You have successfully top-up RM ${parseFloat(newCredit).toFixed(
+                2
+              )} credit.`
+            );
             getStudentList(searchText);
           },
         },

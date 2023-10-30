@@ -23,10 +23,16 @@ import ManageMenuScreen from "../screens/admin/ManageMenuScreen";
 import MenuAddScreen from "../screens/admin/MenuAddScreen";
 import MenuDetailScreen from "../screens/admin/MenuDetailScreen";
 import StaffCreditScreen from "../screens/admin/StaffCreditScreen";
+import AdminOrderScreen from "../screens/admin/AdminOrderScreen";
+import SalesReportScreen from "../screens/admin/SalesReportScreen";
 
 // User Pages
 import AccountPendingScreen from "../screens/user/AccountPendingScreen";
+import AccountDetailScreen from "../screens/user/AccountDetailScreen";
 import UserHomeScreen from "../screens/user/UserHomeScreen";
+import MenuOrderScreen from "../screens/user/MenuOrderScreen";
+import CartScreen from "../screens/user/CartScreen";
+import UserOrderScreen from "../screens/user/UserOrderScreen";
 
 // Template Page
 import Template from "../screens/Template";
@@ -108,6 +114,36 @@ export default MainNavigation = () => {
           component={StaffCreditScreen}
           options={{ headerTitle: "Staff Credit" }}
         />
+        <Stack.Screen
+          name="SalesReportScreen"
+          component={SalesReportScreen}
+          options={{ headerTitle: "Sales Report" }}
+        />
+      </Stack.Navigator>
+    );
+  }
+
+  function AdminOrderStack() {
+    return (
+      <Stack.Navigator
+        initialRouteName="AdminOrderScreen"
+        headerMode="screen"
+        screenOptions={{
+          header: ({ options, route, back, navigation }) => (
+            <HeaderBar
+              options={options}
+              route={route}
+              back={back}
+              navigation={navigation}
+            />
+          ),
+        }}
+      >
+        <Stack.Screen
+          name="AdminOrderScreen"
+          component={AdminOrderScreen}
+          options={{ headerTitle: "Order" }}
+        />
       </Stack.Navigator>
     );
   }
@@ -134,20 +170,128 @@ export default MainNavigation = () => {
         })}
       >
         <Tab.Screen name="Home" component={AdminMainStack} />
-        <Tab.Screen name="Order" component={Template} />
+        <Tab.Screen name="Order" component={AdminOrderStack} />
       </Tab.Navigator>
+    );
+  }
+
+  function UserMainStack() {
+    return (
+      <Stack.Navigator
+        initialRouteName="UserHomeScreen"
+        headerMode="screen"
+        screenOptions={{
+          header: ({ options, route, back, navigation }) => (
+            <HeaderBar
+              options={options}
+              route={route}
+              back={back}
+              navigation={navigation}
+            />
+          ),
+        }}
+      >
+        <Stack.Screen
+          name="UserHomeScreen"
+          component={UserHomeScreen}
+          options={{ headerTitle: "Menu" }}
+        />
+        <Stack.Screen
+          name="AccountDetailScreen"
+          component={AccountDetailScreen}
+          options={{ headerTitle: "Account Detail" }}
+        />
+        <Stack.Screen
+          name="MenuOrderScreen"
+          component={MenuOrderScreen}
+          options={{ headerTitle: "Menu Detail" }}
+        />
+        <Stack.Screen
+          name="CartScreen"
+          component={CartScreen}
+          options={{ headerTitle: "Cart" }}
+        />
+      </Stack.Navigator>
+    );
+  }
+
+  function UserCartStack() {
+    return (
+      <Stack.Navigator
+        initialRouteName="CartScreen"
+        headerMode="screen"
+        screenOptions={{
+          header: ({ options, route, back, navigation }) => (
+            <HeaderBar
+              options={options}
+              route={route}
+              back={back}
+              navigation={navigation}
+            />
+          ),
+        }}
+      >
+        <Stack.Screen
+          name="CartScreen"
+          component={CartScreen}
+          options={{ headerTitle: "Cart" }}
+        />
+      </Stack.Navigator>
+    );
+  }
+
+  function UserOrderStack() {
+    return (
+      <Stack.Navigator
+        initialRouteName="UserOrderScreen"
+        headerMode="screen"
+        screenOptions={{
+          header: ({ options, route, back, navigation }) => (
+            <HeaderBar
+              options={options}
+              route={route}
+              back={back}
+              navigation={navigation}
+            />
+          ),
+        }}
+      >
+        <Stack.Screen
+          name="UserOrderScreen"
+          component={UserOrderScreen}
+          options={{ headerTitle: "Order" }}
+        />
+      </Stack.Navigator>
     );
   }
 
   function UserStack() {
     return (
-      <Stack.Navigator initialRouteName="UserHomeScreen">
-        <Stack.Screen
-          name="UserHomeScreen"
-          component={UserHomeScreen}
-          options={{ headerShown: false }}
-        />
-      </Stack.Navigator>
+      <Tab.Navigator
+        initialRouteName="Menu"
+        screenOptions={({ route, navigation }) => ({
+          tabBarIcon: ({ focused, color, size }) => {
+            let iconName;
+
+            if (route.name === "Menu") {
+              iconName = focused ? "newspaper" : "newspaper-outline";
+            } else if (route.name === "Cart") {
+              iconName = focused ? "cart" : "cart-outline";
+            } else if (route.name === "Order") {
+              iconName = focused ? "time" : "time-outline";
+            }
+
+            return <Ionicons name={iconName} size={size} color={color} />;
+          },
+          headerShown: false,
+          unmountOnBlur: true,
+          tabBarActiveTintColor: colors.navigationBottom,
+        })}
+      >
+        <Tab.Screen name="Menu" component={UserMainStack} />
+        <Tab.Screen name="Cart" component={UserCartStack} />
+        <Tab.Screen name="Order" component={UserOrderStack} />
+      </Tab.Navigator>
     );
   }
 

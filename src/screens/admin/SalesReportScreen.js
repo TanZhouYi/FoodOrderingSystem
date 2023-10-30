@@ -1,9 +1,11 @@
 import { useState, useEffect } from "react";
-import { StyleSheet, View, Dimensions, ScrollView } from "react-native";
+import { StyleSheet, View, Dimensions, ScrollView, Alert } from "react-native";
 import { Button, Card, Chip, DataTable, Text } from "react-native-paper";
 import colors from "../../constants/colors";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import moment from "moment";
+import * as Print from "expo-print";
+import { shareAsync } from "expo-sharing";
 import { onValue, ref, db } from "../../database/firebase";
 
 const SalesReportScreen = ({ route, navigation }) => {
@@ -13,13 +15,14 @@ const SalesReportScreen = ({ route, navigation }) => {
   const [selectEndDate, setSelectEndDate] = useState(false);
   const [startDate, setStartDate] = useState(moment().startOf("month"));
   const [endDate, setEndDate] = useState(moment().endOf("month"));
+  const [isExportReport, setIsExportReport] = useState(false);
 
   useEffect(() => {
     navigation.setOptions({
       rightIcons: [
         {
           icon: "printer-outline",
-          onPress: () => {},
+          onPress: () => setIsExportReport(true),
         },
       ],
     });
@@ -140,10 +143,128 @@ const SalesReportScreen = ({ route, navigation }) => {
     );
   };
 
+  const OnExportReport = () => {
+    useEffect(() => {
+      (async () => {
+        if (recordList.length == 0) {
+          setIsExportReport(false);
+          return Alert.alert("Warning", "No record to export");
+        }
+
+        let totalItems = 0;
+        let totalAmount = 0;
+        let reportList = orderList
+          .map((item) => {
+            totalItems += item.items.length;
+            totalAmount += item.amount;
+            return `
+              <tr>
+                <td>${moment(item.createdTime, "X").format(
+                  "DD/MM/YYYY - hh:mm A"
+                )}</td>
+                <td>${item.items.length}</td>
+                <td>${parseFloat(item.amount).toFixed(2)}</td>
+              </tr>
+              `;
+          })
+          .join("");
+        let html = `
+          <html>
+            <head>
+              <style>
+                body {
+                  font-family: "Helvetica";
+                  font-size: 12px;
+                }
+                header,
+                footer {
+                  height: 50px;
+                  background-color: #fff;
+                  color: #000;
+                  display: flex;
+                  justify-content: center;
+                  padding: 0 20px;
+                }
+                table {
+                  width: 100%;
+                  border-collapse: collapse;
+                }
+                th,
+                td {
+                  border: 1px solid #000;
+                  padding: 5px;
+                }
+                th {
+                  background-color: #ccc;
+                }
+              </style>
+            </head>
+            <body>
+              <header>
+                <h1>Sales Report</h1>
+              </header>
+              <h1>Report Details</h1>
+              <table>
+                <tr>
+                  <th>Date</th>
+                  <td>${moment(startDate).format("DD/MM/YYYY")} to ${moment(
+          endDate
+        ).format("DD/MM/YYYY")}</td>
+                </tr>
+                <tr>
+                  <th>Total Order</th>
+                  <td>${orderList.length}</td>
+                </tr>
+                <tr>
+                  <th>Total Items</th>
+                  <td>${totalItems}</td>
+                </tr>
+                <tr>
+                  <th>Grand Total</th>
+                  <td>RM ${parseFloat(totalAmount).toFixed(2)}</td>
+                </tr>
+              </table>
+              <h1>List</h1>
+              <table>
+                <tr>
+                  <th>Date</th>
+                  <th>Items</th>
+                  <th>Total (RM)</th>
+                </tr>
+                ${reportList}
+              </table>
+            </body>
+          </html>
+        `;
+        const { uri } = await Print.printToFileAsync({ html });
+        setIsExportReport(false);
+        Alert.alert(
+          "Success",
+          "Your Sales Report is Ready",
+          [
+            { text: "Cancel", style: "cancel" },
+            {
+              text: "Download",
+              onPress: async () => {
+                await shareAsync(uri, {
+                  UTI: ".pdf",
+                  mimeType: "application/pdf",
+                });
+              },
+            },
+          ],
+          { cancelable: true }
+        );
+      })();
+    }, []);
+    return <></>;
+  };
+
   return (
     <View style={{ flex: 1 }}>
       <ScrollView style={{ backgroundColor: colors.bgColor }}>
         <View style={styles.container}>
+          {isExportReport && <OnExportReport />}
           <RenderRangeFilter />
           <RenderRecordList />
         </View>

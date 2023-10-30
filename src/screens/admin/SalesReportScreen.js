@@ -5,6 +5,8 @@ import colors from "../../constants/colors";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import moment from "moment";
 import * as Print from "expo-print";
+import * as FileSystem from "expo-file-system";
+import * as IntentLauncher from "expo-intent-launcher";
 import { shareAsync } from "expo-sharing";
 import { onValue, ref, db } from "../../database/firebase";
 
@@ -243,6 +245,21 @@ const SalesReportScreen = ({ route, navigation }) => {
           "Your Sales Report is Ready",
           [
             { text: "Cancel", style: "cancel" },
+            {
+              text: "Preview",
+              onPress: async () => {
+                FileSystem.getContentUriAsync(uri).then((cUri) => {
+                  IntentLauncher.startActivityAsync(
+                    "android.intent.action.VIEW",
+                    {
+                      data: cUri,
+                      flags: 1,
+                      type: "application/pdf",
+                    }
+                  );
+                });
+              },
+            },
             {
               text: "Download",
               onPress: async () => {

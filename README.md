@@ -24,22 +24,7 @@
 > The Android phone used to preview the project and the computer hosting the server need to be on the same network.
 > 
 
-> This project uses Firebase as the database, please create your own Firebase project first.
-> 
 
-> Environment files are not included, please create your own and name them .env or .env.local
-> 
-> 
-> ```
-> EXPO_PUBLIC_FIREBASE_apiKey=""
-> EXPO_PUBLIC_FIREBASE_authDomain=""
-> EXPO_PUBLIC_FIREBASE_databaseURL=""
-> EXPO_PUBLIC_FIREBASE_projectId=""
-> EXPO_PUBLIC_FIREBASE_storageBucket=""
-> EXPO_PUBLIC_FIREBASE_messagingSenderId=""
-> EXPO_PUBLIC_FIREBASE_appId=""
-> ```
-> 
 
 ### Install Application
 
